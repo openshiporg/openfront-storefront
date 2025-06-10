@@ -22,7 +22,7 @@ const getEmptyResponseForQuery = (query: RequestDocument): Record<string, any[] 
 
 // Factory function using composition instead of inheritance
 const createRetryingClient = async () => {
-  const client = new GraphQLClient("http://localhost:3000/api/graphql");
+  const client = new GraphQLClient(process.env.OPENFRONT_GRAPHQL_ENDPOINT!);
 
   return {
     async request<T = any, V extends Variables = Variables>(
