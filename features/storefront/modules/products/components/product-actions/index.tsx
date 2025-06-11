@@ -28,9 +28,10 @@ type ProductOptionValueInfo = {
 // Corresponds to ProductOption in schema
 type ProductOptionInfoForActions = {
   id: string;
-  title?: string | null; // Use title from schema if available
-  name?: string | null; // Correct field name from schema
-  productOptionValues: ProductOptionValueInfo[]; // Include values as required by OptionSelect
+  title: string;
+  name?: string | null;
+  metadata?: Record<string, any>;
+  productOptionValues?: ProductOptionValueInfo[];
 };
 
 // Corresponds to Price in schema
@@ -50,18 +51,14 @@ type ProductVariantInfoForActions = {
 };
 
 // Corresponds to Region in schema
-type RegionInfoForActions = {
-  id: string;
-  currencyCode: string;
-};
+import { StoreRegion } from "@/features/storefront/types/storefront";
+
+type RegionInfoForActions = StoreRegion;
 
 // Corresponds to Product in schema
-type ProductInfoForActions = {
-  id: string;
-  title?: string | null; // Correct field name from schema
-  productOptions?: ProductOptionInfoForActions[] | null; // Correct field name from schema - UPDATED
-  productVariants?: ProductVariantInfoForActions[] | null; // Correct field name from schema - UPDATED
-};
+import { StoreProduct } from "@/features/storefront/types/storefront";
+
+type ProductInfoForActions = StoreProduct;
 
 type ProductActionsProps = {
   product: any; // Override strict types to prioritize JS logic

@@ -27,9 +27,10 @@ type ProductOptionValueInfo = {
 
 type ProductOptionInfoForActions = {
   id: string;
-  title?: string | null;
+  title: string;
   name?: string | null;
-  productOptionValues: ProductOptionValueInfo[];
+  metadata?: Record<string, any>;
+  productOptionValues?: ProductOptionValueInfo[];
 };
 
 type ProductVariantInfoForActions = {
@@ -41,18 +42,13 @@ type ProductVariantInfoForActions = {
   prices?: { amount: number; currencyCode: string }[] | null;
 };
 
-type RegionInfoForActions = {
-  id: string;
-  currencyCode: string;
-  locale?: string; // Add locale property
-};
+import { StoreRegion } from "@/features/storefront/types/storefront";
 
-type ProductInfoForActions = {
-  id: string;
-  title?: string | null; // Correct field name from schema
-  productOptions?: ProductOptionInfoForActions[] | null; // Correct field name from schema - CONSISTENT
-  productVariants?: ProductVariantInfoForActions[] | null; // Correct field name from schema - CONSISTENT
-};
+type RegionInfoForActions = StoreRegion;
+
+import { StoreProduct } from "@/features/storefront/types/storefront";
+
+type ProductInfoForActions = StoreProduct;
 
 type MobileActionsProps = {
   product: ProductInfoForActions; // Use updated type
@@ -186,7 +182,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                                 option={option}
                                 current={options[option.id]}
                                 updateOption={(value) => updateOptions(option.id, value)}
-                                title={option.title || option.name || ''} // Use title or name from new type
+                                title={option.title}
                                 disabled={optionsDisabled}
                               />
                             </div>

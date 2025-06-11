@@ -3,10 +3,15 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 import LineItemOptions from "@/features/storefront/modules/common/components/line-item-options"
 import Thumbnail from "@/features/storefront/modules/products/components/thumbnail"
 
-const Item = ({
-  item,
-  region
-}) => {
+import { OrderLineItem } from "@/features/storefront/modules/order/components/items";
+import { StoreRegion } from "@/features/storefront/types/storefront";
+
+type ItemProps = {
+  item: OrderLineItem;
+  region: StoreRegion;
+};
+
+const Item = ({ item, region }: ItemProps) => {
   return (
     <TableRow className="w-full">
       <TableCell className="!pl-0 p-4 w-24">
@@ -18,7 +23,7 @@ const Item = ({
       <TableCell className="text-left">
         <p className="font-medium">{item.title}</p>
         {item.variantTitle && (
-          <LineItemOptions variant={item.productVariant} variantTitle={item.variantTitle} />
+        <LineItemOptions variant={item.productVariant} variantTitle={item.variantTitle} />
         )}
       </TableCell>
 
@@ -34,6 +39,6 @@ const Item = ({
       </TableCell>
     </TableRow>
   );
-}
+};
 
 export default Item

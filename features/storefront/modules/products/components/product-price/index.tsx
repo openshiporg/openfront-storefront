@@ -3,10 +3,16 @@ import { useMemo } from "react"
 
 import { getProductPrice } from "@/features/storefront/lib/util/get-product-price"
 
+import { StoreProduct, StoreRegion } from "@/features/storefront/types/storefront";
+
 export default function ProductPrice({
   product,
   variant,
-  region
+  region,
+}: {
+  product: StoreProduct;
+  variant?: any;
+  region: StoreRegion;
 }) {
   const { cheapestPrice, variantPrice } = getProductPrice({
     product,

@@ -4,6 +4,8 @@ import Thumbnail from "../thumbnail"
 import PreviewPrice from "./price"
 import { retrievePricedProductById } from "@/features/storefront/lib/data/products"
 
+import { StoreRegion } from "@/features/storefront/types/storefront";
+
 interface ProductPreviewProps {
   productPreview: {
     id: string
@@ -12,12 +14,7 @@ interface ProductPreviewProps {
     title: string
   }
   isFeatured?: boolean
-  region: {
-    id: string
-    currency: {
-      code: string
-    }
-  }
+  region: StoreRegion;
 }
 
 export default async function ProductPreview({

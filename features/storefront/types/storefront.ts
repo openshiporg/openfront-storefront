@@ -392,6 +392,9 @@ export interface StoreRegion {
   id: string;
   name: string;
   currency_code: string;
+  currency: {
+    code: string;
+  };
   countries: {
     id: string;
     name: string;
@@ -424,6 +427,54 @@ export interface StoreOrder {
   giftCard: number;
   shipping: number;
   tax: number;
+  payments?: {
+    id: string;
+    amount: number;
+    currencyCode: string;
+    paymentCollection?: {
+      paymentSessions?: {
+        id: string;
+        isSelected?: boolean;
+        paymentProvider?: {
+          id: string;
+          code?: string;
+        };
+      }[];
+    };
+    data: {
+      cardLast4?: string;
+    };
+    createdAt: string;
+  }[];
+}
+
+export interface MoneyAmount {
+  amount: number;
+  currency: {
+    code: string;
+  };
+  calculatedPrice: {
+    calculatedAmount: number;
+    originalAmount: number;
+    currencyCode: string;
+  };
+}
+
+export interface ProductVariant {
+  id: string;
+  title: string;
+  sku?: string;
+  inventoryQuantity?: number;
+  allowBackorder?: boolean;
+  metadata?: Record<string, any>;
+  productOptionValues?: {
+    id: string;
+    value: string;
+    productOption: {
+      id: string;
+    };
+  }[];
+  prices?: MoneyAmount[];
 }
 
 export interface StoreProduct {
@@ -450,33 +501,7 @@ export interface StoreProduct {
       value: string;
     }[];
   }[];
-  productVariants?: {
-    id: string;
-    title: string;
-    sku?: string;
-    inventoryQuantity?: number;
-    allowBackorder?: boolean;
-    metadata?: Record<string, any>;
-    productOptionValues?: {
-      id: string;
-      value: string;
-      productOption: {
-        id: string;
-      };
-    }[];
-    prices?: {
-      id: string;
-      amount: number;
-      currency: {
-        code: string;
-      };
-      calculatedPrice: {
-        calculatedAmount: number;
-        originalAmount: number;
-        currencyCode: string;
-      };
-    }[];
-  }[];
+  productVariants?: ProductVariant[];
   status?: string;
   metadata?: Record<string, any>;
 }
@@ -487,6 +512,7 @@ export interface CartLineItem {
   title: string;
   sku?: string;
   thumbnail?: string;
+  total?: string;
   variant?: {
     id: string;
     title: string;

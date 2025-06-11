@@ -11,35 +11,33 @@ import Item from "@/features/storefront/modules/order/components/item"
 import SkeletonLineItem from "@/features/storefront/modules/skeletons/components/skeleton-line-item"
 
 // Define inline types based on GraphQL schema and component usage
-type OrderLineItem = {
+export type OrderLineItem = {
   id: string;
-  title?: string | null; // Correct field name from schema
   quantity: number;
-  thumbnail?: string | null;
-  unitPrice?: number | null; // Correct field name from schema
-  total?: number | null; // Correct field name from schema
-  variant?: { // Structure based on Item component usage
-    id: string;
-    title?: string | null;
-    // Add other variant fields if needed by Item
-  } | null;
-  createdAt?: string | null; // Correct field name from schema
-  // Add other fields if needed by Item component
+  title: string;
+  sku?: string;
+  thumbnail?: string;
+  metadata?: Record<string, any>;
+  productData?: Record<string, any>;
+  variantData?: Record<string, any>;
+  variantTitle?: string;
+  formattedUnitPrice?: string;
+  formattedTotal?: string;
+  productVariant?: any;
+  originalLineItem?: any;
+  fulfillmentItems?: any[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
-type RegionInfoForOrder = {
-  id: string;
-  currencyCode: string;
-  // Add other fields if needed by Item component
-};
+import { StoreRegion } from "@/features/storefront/types/storefront";
 
-
-type ItemsProps = {
+export type ItemsProps = {
   items: OrderLineItem[];
-  region: RegionInfoForOrder;
+  region: StoreRegion;
 };
 
-const Items = ({ items, region }: ItemsProps) => { // Destructure region
+const Items = ({ items, region }: ItemsProps) => {
 
   return (
     <div className="flex flex-col">

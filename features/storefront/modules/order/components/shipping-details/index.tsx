@@ -28,10 +28,7 @@ type ShippingMethodInfo = {
   shippingOption?: ShippingOptionInfo | null;
 };
 
-type RegionInfoForShipping = {
-  id: string;
-  currencyCode: string;
-};
+import { StoreRegion } from "@/features/storefront/types/storefront";
 
 type OrderWithShipping = {
   id: string;
@@ -40,7 +37,8 @@ type OrderWithShipping = {
   shippingAddress?: AddressInfoForShipping | null; // Correct field name
   shippingMethods?: ShippingMethodInfo[] | null; // Correct field name
   shippingTotal?: number | null; // Correct field name
-  region?: RegionInfoForShipping | null;
+  region?: StoreRegion | null;
+  shipping: number;
 };
 
 type ShippingDetailsProps = {

@@ -1,9 +1,24 @@
-export function getProductPrice({ product, variantId, region }) {
+import {
+  StoreProduct,
+  ProductVariant,
+  MoneyAmount,
+  StoreRegion,
+} from "../../types/storefront";
+
+export function getProductPrice({
+  product,
+  variantId,
+  region,
+}: {
+  product: StoreProduct;
+  variantId?: string;
+  region: StoreRegion;
+}) {
   if (!product || !product.id) {
     throw new Error("No product provided");
   }
 
-  const getPercentageDiff = (original, calculated) => {
+  const getPercentageDiff = (original: number, calculated: number) => {
     const diff = original - calculated;
     const decrease = (diff / original) * 100;
     return decrease.toFixed();
@@ -11,27 +26,29 @@ export function getProductPrice({ product, variantId, region }) {
 
   const variants = product.productVariants;
 
-  const getCalculatedPrice = (variant) => {
-    const price = variant.prices.find(
-      (p) => p.currency.code === region.currency.code
+  const getCalculatedPrice = (variant: ProductVariant) => {
+    const price = variant.prices?.find(
+      (p: MoneyAmount) => p.currency.code === region.currency.code
     );
     return price ? price.calculatedPrice : null;
   };
 
   const variantPrice = variantId
-    ? getCalculatedPrice(variants.find((v) => v.id === variantId))
+    ? getCalculatedPrice(variants?.find((v) => v.id === variantId)!)
     : null;
 
-  const cheapestPrice = variants.reduce((cheapest, variant) => {
+  const cheapestPrice = variants?.reduce((cheapest, variant) => {
     const price = getCalculatedPrice(variant);
     if (
       !cheapest ||
-      (price && price.calculatedAmount < cheapest.calculatedAmount)
+      (price &&
+        cheapest.calculatedAmount > 0 &&
+        price.calculatedAmount < cheapest.calculatedAmount)
     ) {
       return price;
     }
     return cheapest;
-  }, null);
+  }, null as MoneyAmount["calculatedPrice"] | null);
 
   return {
     variantPrice,

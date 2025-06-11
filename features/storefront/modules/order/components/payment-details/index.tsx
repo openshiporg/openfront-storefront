@@ -1,8 +1,10 @@
 import { paymentInfoMap } from "@/features/storefront/lib/constants";
 import Divider from "@/features/storefront/modules/common/components/divider";
 
-const PaymentDetails = ({ order }) => {
-  const payment = order.payments[0];
+import { StoreOrder } from "@/features/storefront/types/storefront";
+
+const PaymentDetails = ({ order }: { order: StoreOrder }) => {
+  const payment = order.payments?.[0];
   const paymentSession = payment?.paymentCollection?.paymentSessions?.find(
     (s) => s.isSelected
   );
@@ -12,7 +14,7 @@ const PaymentDetails = ({ order }) => {
     <div>
       <h2 className="flex flex-row text-3xl font-medium my-6">Payment</h2>
       <div>
-        {payment && provider && (
+        {payment && provider?.code && (
           <div className="flex items-start gap-x-1 w-full">
             <div className="flex flex-col w-1/3">
               <p className="text-sm font-medium text-foreground mb-1">

@@ -4,9 +4,9 @@ import ProductPreview from "../product-preview"
 // Define ProductPreviewType locally since product-preview doesn't export it
 type ProductPreviewType = {
   id: string;
-  handle?: string | null;
-  title?: string | null;
-  thumbnail?: string | null;
+  handle: string;
+  title: string;
+  thumbnail: string;
 } 
 import { StoreRegion } from "@/features/storefront/types/storefront"
 
