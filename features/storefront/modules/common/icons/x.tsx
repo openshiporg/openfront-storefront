@@ -1,6 +1,6 @@
 import React from "react"
 
-import { IconProps } from "types/icon"
+import { IconProps } from "@/features/storefront/types/icon"
 
 const X: React.FC<IconProps> = ({
   size = "20",

@@ -2,7 +2,7 @@ import { retrieveOrder } from "@/features/storefront/lib/data/orders"
 import OrderCompletedTemplate from "@/features/storefront/modules/order/templates/order-completed-template" 
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import type { StoreOrder } from "@/features/storefront/types/graphql-types"
+import type { StoreOrder } from "@/features/storefront/types/storefront"
 import SkeletonOrderConfirmed from "@/features/storefront/modules/skeletons/templates/skeleton-order-confirmed"
  
 // Add searchParams to Props

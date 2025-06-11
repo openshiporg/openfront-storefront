@@ -31,6 +31,80 @@ export interface StorefrontBaseAddressRef {
   country?: StorefrontCountryRef | null;
   phone?: string | null;
 }
+export interface Address {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  address2?: string;
+  company?: string;
+  postalCode: string;
+  city: string;
+  province?: string;
+  phone?: string;
+  countryCode: string;
+  user?: { connect: { id: string } } | { create: { email: string, hasAccount: boolean, name: string } };
+}
+
+export interface ProductWhereClause {
+  productCollections?: {
+    some: { id: { equals: any } }
+  },
+  isGiftcard: { equals: any },
+  productVariants: {
+    some: {
+      prices: {
+        some: {
+          region: {
+            countries: { some: { iso2: { equals: string } } }
+          }
+        }
+      }
+    }
+  },
+  id?: { in: any }
+}
+
+export interface CreateCustomerData {
+  email?: FormDataEntryValue | null;
+  password?: FormDataEntryValue | null;
+  firstName?: FormDataEntryValue | null;
+  lastName?: FormDataEntryValue | null;
+  phone?: FormDataEntryValue | null;
+}
+
+export interface UpdateCustomerData {
+  email?: FormDataEntryValue | null;
+  password?: FormDataEntryValue | null;
+  firstName?: FormDataEntryValue | null;
+  lastName?: FormDataEntryValue | null;
+  phone?: FormDataEntryValue | null;
+}
+
+export interface AddShippingAddressData {
+  firstName?: FormDataEntryValue | null;
+  lastName?: FormDataEntryValue | null;
+  company?: FormDataEntryValue | null;
+  address1?: FormDataEntryValue | null;
+  address2?: FormDataEntryValue | null;
+  city?: FormDataEntryValue | null;
+  province?: FormDataEntryValue | null;
+  postalCode?: FormDataEntryValue | null;
+  countryCode?: FormDataEntryValue | null;
+  phone?: FormDataEntryValue | null;
+}
+
+export interface UpdateShippingAddressData {
+  firstName?: FormDataEntryValue | null;
+  lastName?: FormDataEntryValue | null;
+  company?: FormDataEntryValue | null;
+  address1?: FormDataEntryValue | null;
+  address2?: FormDataEntryValue | null;
+  city?: FormDataEntryValue | null;
+  province?: FormDataEntryValue | null;
+  postalCode?: FormDataEntryValue | null;
+  countryCode?: FormDataEntryValue | null;
+  phone?: FormDataEntryValue | null;
+}
 
 export interface StorefrontBaseRegionRef {
   id: string;
@@ -123,8 +197,6 @@ export interface StorefrontCustomerCheckout {
   addresses?: StorefrontBaseAddressRef[] | null;
 }
 
-import { Lists } from '.keystone/types';
-
 // Define StorefrontRegion based on getRegion return
 export interface StorefrontRegion extends StorefrontBaseRegionRef {
   taxRate?: number | null;
@@ -132,14 +204,37 @@ export interface StorefrontRegion extends StorefrontBaseRegionRef {
 }
 
 export interface StorefrontAccountCustomer {
-  id: string;
+  id:string;
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
   phone?: string | null;
-  // Use precise Keystone generated Address type
-  addresses?: Lists.Address.Item[] | null;
-  billingAddress?: Lists.Address.Item | null;
+  addresses?: StorefrontAddress[] | null
+  billingAddress?: StorefrontAddress | null
+}
+
+export interface StorefrontAddress {
+  id: string
+  firstName?: string | null
+  lastName?: string | null
+  company?: string | null
+  address1?: string | null
+  address2?: string | null
+  city?: string | null
+  province?: string | null
+  postalCode?: string | null
+  country?: StorefrontCountry | null
+  phone?: string | null
+  isBilling?: boolean | null
+}
+
+export interface StorefrontCountry {
+  id: string
+  iso2?: string | null
+  iso3?: string | null
+  numCode?: number | null
+  name?: string | null
+  displayName?: string | null
 }
 
 interface StorefrontOrderDetailsLineItem {
@@ -236,9 +331,8 @@ export interface StorefrontCustomerProfile {
   name?: string | null; // Base field if needed
   email?: string | null;
   phone?: string | null;
-  // Use precise Keystone generated Address type
-  addresses?: Lists.Address.Item[] | null;
-  billingAddress?: Lists.Address.Item | null; // Virtual
+  addresses?: StorefrontAddress[] | null
+  billingAddress?: StorefrontAddress | null // Virtual
 }
 
 export interface StorefrontRegionBasic {
@@ -285,4 +379,120 @@ export interface StoreFreeShippingPrice {
   target_reached: boolean;
   target_remaining: number;
   remaining_percentage: number;
+}
+
+export interface StoreCollection {
+  id: string;
+  title: string;
+  handle: string;
+  products?: any[];
+}
+
+export interface StoreRegion {
+  id: string;
+  name: string;
+  currency_code: string;
+  countries: {
+    id: string;
+    name: string;
+    iso2: string;
+  }[];
+  locale?: string;
+}
+
+export interface StoreOrder {
+  id: string;
+  status: string;
+  displayId: number;
+  email: string;
+  shippingAddress: StorefrontAddress;
+  billingAddress: StorefrontAddress;
+  lineItems: CartLineItem[];
+  region: StoreRegion;
+  total: number;
+  subtotal: number;
+  tax_total: number;
+  shipping_total: number;
+  discount_total: number;
+  created_at: string;
+  updated_at: string;
+  metadata?: Record<string, any>;
+  fulfillment_status?: string;
+  payment_status?: string;
+  currency_code: string;
+  discount: number;
+  giftCard: number;
+  shipping: number;
+  tax: number;
+}
+
+export interface StoreProduct {
+  id: string;
+  title: string;
+  handle: string;
+  description?: {
+    document: any;
+  };
+  thumbnail?: string;
+  productImages?: {
+    id: string;
+    image: {
+      url: string;
+    };
+    imagePath: string;
+  }[];
+  productOptions?: {
+    id: string;
+    title: string;
+    metadata?: Record<string, any>;
+    productOptionValues?: {
+      id: string;
+      value: string;
+    }[];
+  }[];
+  productVariants?: {
+    id: string;
+    title: string;
+    sku?: string;
+    inventoryQuantity?: number;
+    allowBackorder?: boolean;
+    metadata?: Record<string, any>;
+    productOptionValues?: {
+      id: string;
+      value: string;
+      productOption: {
+        id: string;
+      };
+    }[];
+    prices?: {
+      id: string;
+      amount: number;
+      currency: {
+        code: string;
+      };
+      calculatedPrice: {
+        calculatedAmount: number;
+        originalAmount: number;
+        currencyCode: string;
+      };
+    }[];
+  }[];
+  status?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface CartLineItem {
+  id: string;
+  quantity: number;
+  title: string;
+  sku?: string;
+  thumbnail?: string;
+  variant?: {
+    id: string;
+    title: string;
+    sku?: string;
+    prices?: {
+      amount: number;
+    }[];
+  };
 }

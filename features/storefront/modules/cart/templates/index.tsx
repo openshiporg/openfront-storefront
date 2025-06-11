@@ -4,7 +4,16 @@ import EmptyCartMessage from "../components/empty-cart-message"
 import SignInPrompt from "../components/sign-in-prompt"
 import Divider from "@/features/storefront/modules/common/components/divider"
 
-const CartTemplate = ({ cart, user }) => {
+interface CartTemplateProps {
+  cart?: {
+    id: string;
+    lineItems: any[];
+    region: any;
+  };
+  user: any;
+}
+
+const CartTemplate = ({ cart, user }: CartTemplateProps) => {
   return (
     <div className="py-12">
       <div className="max-w-[1440px] w-full mx-auto px-6" data-testid="cart-container">

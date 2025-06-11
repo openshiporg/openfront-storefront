@@ -9,6 +9,12 @@ import {
   setAuthToken,
   setCartId,
 } from "@/features/storefront/lib/data/cookies";
+import {
+  CreateCustomerData,
+  UpdateCustomerData,
+  AddShippingAddressData,
+  UpdateShippingAddressData,
+} from "../../types/storefront";
 import { cache } from "react";
 
 export async function getUser() {
@@ -158,7 +164,7 @@ export const getUserWithOrders = cache(async function () {
   return { ...authenticatedItem, orders };
 });
 
-export async function createCustomer(data: Record<string, any>) { // Added type
+export async function createCustomer(data: CreateCustomerData) {
   const headers = await getAuthHeaders(); // Added await
   const { createUser } = await openfrontClient.request(
     gql`
@@ -183,7 +189,7 @@ export async function createCustomer(data: Record<string, any>) { // Added type
   return createUser;
 }
 
-export async function updateCustomer(data: Record<string, any>) { // Added type
+export async function updateCustomer(data: UpdateCustomerData) {
   const headers = await getAuthHeaders(); // Added await
   const { updateUser } = await openfrontClient.request(
     gql`
@@ -208,7 +214,7 @@ export async function updateCustomer(data: Record<string, any>) { // Added type
   return updateUser;
 }
 
-export async function addShippingAddress(data: Record<string, any>) { // Added type
+export async function addShippingAddress(data: AddShippingAddressData) {
   const headers = await getAuthHeaders(); // Added await
   const { addShippingAddress } = await openfrontClient.request(
     gql`
@@ -238,7 +244,7 @@ export async function addShippingAddress(data: Record<string, any>) { // Added t
   return addShippingAddress;
 }
 
-export async function updateShippingAddress(addressId: string, data: Record<string, any>) { // Added types
+export async function updateShippingAddress(addressId: string, data: UpdateShippingAddressData) {
   const headers = await getAuthHeaders(); // Added await
   const { updateShippingAddress } = await openfrontClient.request(
     gql`
@@ -502,7 +508,7 @@ export async function login(_currentState: any, formData: FormData) { // Added t
 
 export async function signOut(countryCode: string) { // Added type
   try {
-    const headers = getAuthHeaders();
+    const headers = await getAuthHeaders();
 
     await openfrontClient.request(
       gql`
@@ -547,7 +553,7 @@ export async function updateCustomerEmail(prevState: any, formData: FormData) { 
     revalidateTag("customer");
     return { success: true, error: null };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -574,7 +580,7 @@ export async function updateCustomerName(prevState: any, formData: FormData) { /
     revalidateTag("customer");
     return { success: true, error: null };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -611,7 +617,7 @@ export async function updateCustomerPassword(prevState: any, formData: FormData)
   } catch (error) {
     // Extract just the error message from the GraphQL error
     const message =
-      (error instanceof Error && error.response?.errors?.[0]?.extensions?.originalError?.message) || // Handle unknown error
+      (error instanceof Error && (error as any).response?.errors?.[0]?.extensions?.originalError?.message) ||
       "An error occurred";
     return { success: false, error: message };
   }
@@ -640,7 +646,7 @@ export async function updateCustomerPhone(prevState: any, formData: FormData) { 
     revalidateTag("customer");
     return { success: true, error: null };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -685,7 +691,7 @@ export async function createCustomerAddress(prevState: any, formData: FormData) 
     revalidateTag("customer");
     return { success: true, error: null };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -727,7 +733,7 @@ export async function updateCustomerAddress(prevState: any, formData: FormData) 
     revalidateTag("customer");
     return { success: true, error: null, addressId: prevState.addressId };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
@@ -751,6 +757,6 @@ export async function deleteCustomerShippingAddress(addressId: string) { // Adde
     revalidateTag("customer");
     return { success: true, error: null };
   } catch (error) {
-    return { success: false, error: error.toString() };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { getProductByHandle } from "@/features/storefront/lib/data/products" 
 import { getRegion } from "@/features/storefront/lib/data/regions" 
 import ProductTemplate from "@/features/storefront/modules/products/templates"
-import { StoreProduct, StoreRegion } from "@/features/storefront/types/graphql-types"
+import { StoreProduct, StoreRegion } from "@/features/storefront/types/storefront"
 
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>

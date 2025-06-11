@@ -18,7 +18,16 @@ import { formatAmount } from "@/features/storefront/lib/util/prices";
 import { useState, useMemo, useActionState } from "react";
 import { Input } from "@/components/ui/input";
 
-const DiscountCode = ({ cart }) => {
+interface DiscountCodeProps {
+  cart?: {
+    discounts?: any[];
+    giftCards?: any[];
+    region?: any;
+    discountsById?: Record<string, number>;
+  };
+}
+
+const DiscountCode = ({ cart }: DiscountCodeProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { discounts, giftCards, region } = cart || {};
@@ -28,7 +37,7 @@ const DiscountCode = ({ cart }) => {
       return [];
     }
 
-    const discountAmounts = cart.discountsById || {};
+    const discountAmounts = cart?.discountsById || {};
 
     return discounts
       .map((discount) => {
@@ -59,13 +68,13 @@ const DiscountCode = ({ cart }) => {
         };
       })
       .filter(Boolean);
-  }, [discounts, region, cart.discountsById]);
+  }, [discounts, region, cart?.discountsById]);
 
-  const removeGiftCardCode = async (code) => {
+  const removeGiftCardCode = async (code: string) => {
     await removeGiftCard(code);
   };
 
-  const removeDiscountCode = async (code) => {
+  const removeDiscountCode = async (code: string) => {
     await removeDiscount(code);
   };
 
@@ -109,7 +118,7 @@ const DiscountCode = ({ cart }) => {
             </>
           )}
         </form>
-        {giftCards?.length > 0 && (
+        {giftCards && giftCards.length > 0 && (
           <div className="flex flex-col mt-4">
             <h3 className="font-medium">Gift card(s) applied:</h3>
             {giftCards.map((gc) => (
@@ -142,35 +151,37 @@ const DiscountCode = ({ cart }) => {
 
         {appliedDiscounts.length > 0 && (
           <div className="flex flex-col gap-y-2 mt-4">
-            {appliedDiscounts.map((discount) => (
-              <div className="flex justify-between" key={discount.code}>
-                <div className="flex flex-col">
-                  <Badge
-                    variant="default"
-                    className="flex items-center gap-x-2"
-                  >
-                    {discount.code}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeDiscountCode(discount.code)}
-                      className="-mr-2"
+            {appliedDiscounts.map((discount) =>
+              discount ? (
+                <div className="flex justify-between" key={discount.code}>
+                  <div className="flex flex-col">
+                    <Badge
+                      variant="default"
+                      className="flex items-center gap-x-2"
                     >
-                      <X size={14} />
-                      <span className="sr-only">Remove discount code</span>
-                    </Button>
-                  </Badge>
-                  <span className="txt-xsmall text-ui-fg-muted">
-                    {discount.value}
-                  </span>
+                      {discount.code}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeDiscountCode(discount.code)}
+                        className="-mr-2"
+                      >
+                        <X size={14} />
+                        <span className="sr-only">Remove discount code</span>
+                      </Button>
+                    </Badge>
+                    <span className="txt-xsmall text-ui-fg-muted">
+                      {discount.value}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-ui-fg-muted">
+                      -{discount.discountAmount}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-ui-fg-muted">
-                    -{discount.discountAmount}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ) : null
+            )}
           </div>
         )}
       </div>

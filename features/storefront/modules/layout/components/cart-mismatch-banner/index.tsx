@@ -1,6 +1,6 @@
 "use client"
 
-import { transferCart } from "@/features/storefront/lib/data/customer"
+import { updateCart } from "@/features/storefront/lib/data/cart"
 import { AlertCircle } from "lucide-react" // Use lucide icon
 // Removed Medusa types import
 import { Button } from "@/components/ui/button"; 
@@ -35,7 +35,7 @@ function CartMismatchBanner(props: CartMismatchBannerProps) {
       setIsPending(true)
       setActionText("Transferring..")
 
-      await transferCart()
+      await updateCart({ customer_id: customer.id })
     } catch {
       setActionText("Run transfer again")
       setIsPending(false)

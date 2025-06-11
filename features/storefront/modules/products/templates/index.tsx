@@ -9,7 +9,7 @@ import ProductInfo from "@/features/storefront/modules/products/templates/produc
 import SkeletonRelatedProducts from "@/features/storefront/modules/skeletons/templates/skeleton-related-products"
 import { notFound } from "next/navigation"
 import ProductActionsWrapper from "./product-actions-wrapper"
-import { StoreProduct, StoreRegion } from "@/features/storefront/types/graphql-types"
+import { StoreProduct, StoreRegion } from "@/features/storefront/types/storefront"
 
 type ProductTemplateProps = {
   product: StoreProduct

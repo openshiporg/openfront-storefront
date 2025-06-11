@@ -2,16 +2,33 @@
 
 import { isManual, isStripe, isPaypal } from "@/features/storefront/lib/constants"
 import { placeOrder } from "@/features/storefront/lib/data/cart"
-import { Button } from "@/components/ui/button" // Shadcn Button
+import { Button } from "@/components/ui/button"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
 import { RiLoader2Fill } from "@remixicon/react"
 
-type PaymentButtonProps = {
-  cart: any
-  "data-testid": string
+interface PaymentButtonProps {
+  cart: {
+    shippingAddress: any;
+    billingAddress: any;
+    email: string;
+    shippingMethods: any[];
+    paymentCollection?: {
+      paymentSessions?: {
+        isSelected: boolean;
+        paymentProvider?: {
+          code: string;
+        };
+        data?: {
+          clientSecret?: string;
+          orderId?: string;
+        };
+      }[];
+    };
+  };
+  "data-testid": string;
 }
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
@@ -26,11 +43,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shippingMethods?.length ?? 0) < 1
 
   const paymentSession = cart.paymentCollection?.paymentSessions?.find(
-    (s: any) => s.isSelected
+    (s) => s.isSelected
   )
 
   switch (true) {
-    // Check using paymentProvider.code
     case isStripe(paymentSession?.paymentProvider?.code):
       return (
         <StripePaymentButton
@@ -39,7 +55,6 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
-    // Check using paymentProvider.code
     case isPaypal(paymentSession?.paymentProvider?.code):
       return (
         <PayPalPaymentButton
@@ -48,24 +63,25 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
           data-testid={dataTestId}
         />
       )
-    // Check using paymentProvider.code
     case isManual(paymentSession?.paymentProvider?.code):
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )
     default:
-      return <Button disabled size="lg">Select a payment method</Button> // Use Shadcn Button, add size
+      return <Button disabled size="lg">Select a payment method</Button>
   }
 }
 
-const StripePaymentButton = ({
+interface StripePaymentButtonProps {
+  cart: PaymentButtonProps["cart"];
+  notReady: boolean;
+  "data-testid"?: string;
+}
+
+const StripePaymentButton: React.FC<StripePaymentButtonProps> = ({
   cart,
   notReady,
   "data-testid": dataTestId,
-}: {
-  cart: any
-  notReady: boolean
-  "data-testid"?: string
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -85,31 +101,29 @@ const StripePaymentButton = ({
   const card = elements?.getElement("card")
 
   const session = cart.paymentCollection?.paymentSessions?.find(
-    (s: any) => s.isSelected && s.paymentProvider?.code === 'pp_stripe_stripe' // Ensure it's the selected Stripe session
+    (s) => s.isSelected && s.paymentProvider?.code === 'pp_stripe_stripe'
   )
 
-  const disabled = !stripe || !elements ? true : false
+  const disabled = !stripe || !elements || !card ? true : false
 
   const handlePayment = async () => {
     setSubmitting(true)
 
-    if (!stripe || !elements || !card || !cart || !session) { // Added session check
+    if (!stripe || !elements || !card || !cart || !session?.data?.clientSecret) {
       setSubmitting(false)
-      console.log({ stripe, elements, card, cart, session })
       setErrorMessage("Stripe not initialized or card element not found.")
       return
     }
 
     await stripe
-      .confirmCardPayment(session?.data?.clientSecret as string, { // Accessing client_secret from JSON data
+      .confirmCardPayment(session.data.clientSecret, {
         payment_method: {
           card: card,
           billing_details: {
-            name:
-              `${cart.billingAddress?.firstName || ''} ${cart.billingAddress?.lastName || ''}`.trim(),
+            name: `${cart.billingAddress?.firstName || ''} ${cart.billingAddress?.lastName || ''}`.trim(),
             address: {
               city: cart.billingAddress?.city ?? undefined,
-              country: cart.billingAddress?.countryCode ?? undefined, // Use countryCode
+              country: cart.billingAddress?.countryCode ?? undefined,
               line1: cart.billingAddress?.address1 ?? undefined,
               line2: cart.billingAddress?.address2 ?? undefined,
               postal_code: cart.billingAddress?.postalCode ?? undefined,
@@ -138,29 +152,12 @@ const StripePaymentButton = ({
           return
         }
 
-        switch (paymentIntent.status) {
-          case "succeeded":
-          case "requires_capture":
-            onPaymentCompleted()
-            break
-          case "requires_action":
-            // Handle actions like 3D Secure
-            stripe.handleNextAction({ clientSecret: paymentIntent.client_secret as string })
-              .then(result => {
-                if (result.error) {
-                  setErrorMessage(result.error.message || "An error occurred during payment authentication.")
-                } else if (result.paymentIntent?.status === "succeeded") {
-                  onPaymentCompleted()
-                }
-              });
-            break
-          default:
-            setErrorMessage(`Unhandled payment intent status: ${paymentIntent.status}`)
-            break
+        if (paymentIntent.status === "succeeded" || paymentIntent.status === "requires_capture") {
+          onPaymentCompleted()
         }
       })
-      .catch((error) => {
-        setErrorMessage(error.message || "An unknown Stripe error occurred.")
+      .catch(() => {
+        setErrorMessage("An unknown error occurred, please try again.")
       })
       .finally(() => {
         setSubmitting(false)
@@ -170,9 +167,9 @@ const StripePaymentButton = ({
   return (
     <>
       <Button
-        disabled={disabled || notReady || submitting} // Disable if submitting
+        disabled={disabled || notReady || submitting}
         onClick={handlePayment}
-        size="lg" // Map size
+        size="lg"
         data-testid={dataTestId}
       >
         {submitting && <RiLoader2Fill className="mr-2 h-4 w-4 animate-spin" />}
@@ -208,10 +205,10 @@ const ManualTestPaymentButton = ({ notReady, "data-testid": dataTestId }: { notR
   return (
     <>
       <Button
-        disabled={notReady || submitting} // Disable if submitting
+        disabled={notReady || submitting}
         onClick={handlePayment}
-        size="lg" // Map size
-        data-testid={dataTestId || "submit-order-button"} // Use passed testid or default
+        size="lg"
+        data-testid={dataTestId || "submit-order-button"}
       >
         {submitting && <RiLoader2Fill className="mr-2 h-4 w-4 animate-spin" />} 
         Place order
@@ -224,14 +221,16 @@ const ManualTestPaymentButton = ({ notReady, "data-testid": dataTestId }: { notR
   )
 }
 
-const PayPalPaymentButton = ({
+interface PayPalPaymentButtonProps {
+  cart: PaymentButtonProps["cart"];
+  notReady: boolean;
+  "data-testid"?: string;
+}
+
+const PayPalPaymentButton: React.FC<PayPalPaymentButtonProps> = ({
   notReady,
   cart,
   "data-testid": dataTestId,
-}: {
-  notReady: boolean
-  cart: any
-  "data-testid"?: string
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -247,7 +246,7 @@ const PayPalPaymentButton = ({
   }
 
   const session = cart.paymentCollection?.paymentSessions?.find(
-    (s: any) => s.isSelected
+    (s) => s.isSelected
   )
 
   const handlePayment = async (
@@ -269,28 +268,28 @@ const PayPalPaymentButton = ({
       })
   }
 
-  const [{ isPending, isResolved }] = usePayPalScriptReducer()
+  const [{ isPending }] = usePayPalScriptReducer()
 
   if (isPending) {
     return <RiLoader2Fill className="animate-spin"/>
   }
 
-  if (isResolved) {
-    return (
-      <>
-        <PayPalButtons
-          style={{ layout: "horizontal" }}
-          createOrder={async () => session.data.orderId}
-          onApprove={handlePayment}
-          disabled={notReady || submitting || isPending}
-          data-testid={dataTestId || "paypal-payment-button"}
-        />
-        <ErrorMessage error={errorMessage} data-testid="paypal-payment-error-message" />
-      </>
-    )
+  if (!session?.data?.orderId) {
+    return <ErrorMessage error="PayPal order ID not found." />;
   }
 
-  return null
+  return (
+    <>
+      <PayPalButtons
+        style={{ layout: "horizontal" }}
+        createOrder={async () => session.data?.orderId as string}
+        onApprove={handlePayment}
+        disabled={notReady || submitting || isPending}
+        data-testid={dataTestId || "paypal-payment-button"}
+      />
+      <ErrorMessage error={errorMessage} data-testid="paypal-payment-error-message" />
+    </>
+  )
 }
 
 export default PaymentButton

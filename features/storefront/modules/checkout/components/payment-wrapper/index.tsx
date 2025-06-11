@@ -6,8 +6,25 @@ import StripeWrapper from "./stripe-wrapper"
 import { PayPalScriptProvider } from "@paypal/react-paypal-js"
 import { isStripe, isPaypal } from "@/features/storefront/lib/constants"
 
-type PaymentWrapperProps = {
-  cart: any
+interface PaymentWrapperProps {
+  cart: {
+    paymentCollection?: {
+      paymentSessions?: {
+        isSelected: boolean;
+        paymentProvider?: {
+          code: string;
+        };
+        data?: {
+          clientSecret?: string;
+        }
+      }[];
+    };
+    region?: {
+      currency?: {
+        code?: string;
+      };
+    };
+  };
   children: React.ReactNode
 }
 
@@ -18,10 +35,9 @@ const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
 
 const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ cart, children }) => {
   const paymentSession = cart.paymentCollection?.paymentSessions?.find(
-    (s: any) => s.isSelected
+    (s) => s.isSelected
   )
 
-  // Check using paymentProvider.code
   if (
     isStripe(paymentSession?.paymentProvider?.code) &&
     paymentSession &&
@@ -46,7 +62,7 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ cart, children }) => {
     return (
       <PayPalScriptProvider
         options={{
-          "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
+          clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test",
           currency: cart?.region?.currency?.code?.toUpperCase(),
           intent: "authorize",
           components: "buttons",

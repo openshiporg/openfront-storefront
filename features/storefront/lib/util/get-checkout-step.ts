@@ -1,5 +1,13 @@
+interface Cart {
+  shipping_address?: {
+    address_1: string;
+  };
+  email?: string;
+  shipping_methods: any[];
+}
+
 export function getCheckoutStep(
-  cart
+  cart: Cart
 ) {
   if (!cart?.shipping_address?.address_1 || !cart.email) {
     return "address"

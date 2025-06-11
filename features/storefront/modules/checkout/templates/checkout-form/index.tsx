@@ -5,7 +5,33 @@ import Review from "@/features/storefront/modules/checkout/components/review";
 import { listCartPaymentMethods } from "@/features/storefront/lib/data/payment";
 import { getCartShippingOptions } from "@/features/storefront/lib/data/shipping";
 
-export default async function CheckoutForm({ cart, customer }) {
+interface CheckoutFormProps {
+  cart: {
+    id: string;
+    region: {
+      id: string;
+    };
+    total: number;
+    shippingMethods: any[];
+    paymentCollection?: {
+      paymentSessions?: Array<{
+        isSelected: boolean;
+        status?: string;
+        paymentProvider: {
+          code: string;
+        };
+      }>;
+    };
+    giftCards?: any[];
+    shippingAddress: any;
+    billingAddress: any;
+    email: string;
+    shipping: string;
+  };
+  customer: any;
+}
+
+export default async function CheckoutForm({ cart, customer }: CheckoutFormProps) {
   if (!cart) {
     return null;
   }

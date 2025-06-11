@@ -1,9 +1,8 @@
 "use client"
 
 import { setShippingMethod } from "@/features/storefront/lib/data/cart" 
-import { formatAmount } from "@/features/storefront/lib/util/prices" 
-import { CheckCircle, CircleCheck } from "lucide-react" 
-import { Button } from "@/components/ui/button" // Shadcn Button
+import { CheckCircle } from "lucide-react" 
+import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
@@ -13,9 +12,27 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { RiLoader2Fill } from "@remixicon/react";
 
-type ShippingProps = {
-  cart: any 
-  availableShippingMethods: any[] | null 
+interface ShippingOption {
+  id: string;
+  name: string;
+  calculatedAmount: string;
+}
+
+interface ShippingProps {
+  cart: {
+    id: string;
+    shippingMethods: {
+      shippingOption: {
+        id: string;
+        name: string;
+      };
+    }[];
+    shippingAddress: any;
+    billingAddress: any;
+    email: string;
+    shipping: string;
+  };
+  availableShippingMethods: ShippingOption[] | null
 }
 
 const Shipping: React.FC<ShippingProps> = ({
@@ -23,7 +40,6 @@ const Shipping: React.FC<ShippingProps> = ({
   availableShippingMethods,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
-  // Removed isLoadingPrices and calculatedPricesMap states
   const [error, setError] = useState<string | null>(null)
   const [selectedOption, setSelectedOption] = useState<string | null>(
     cart?.shippingMethods?.[0]?.shippingOption?.id || null
@@ -34,11 +50,6 @@ const Shipping: React.FC<ShippingProps> = ({
   const pathname = usePathname()
 
   const isOpen = searchParams?.get("step") === "delivery"
-
-  // Simplified filtering - assuming all methods are shipping (no pickup)
-  const _shippingMethods = availableShippingMethods
-
-  // Removed pickup related logic and useEffect for price calculation
 
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })
@@ -65,16 +76,15 @@ const Shipping: React.FC<ShippingProps> = ({
   useEffect(() => {
     setIsLoading(false)
     setError(null)
-    // Set initial selected option when component opens
     setSelectedOption(cart?.shippingMethods?.[0]?.shippingOption?.id || null)
   }, [isOpen, cart?.shippingMethods])
 
   return (
     <div className="bg-background">
       <div className="flex flex-row items-center justify-between mb-6">
-        <h2 // Use h2
-          className={cn( 
-            "flex flex-row text-3xl font-medium gap-x-2 items-baseline", // Use Tailwind class
+        <h2
+          className={cn(
+            "flex flex-row text-3xl font-medium gap-x-2 items-baseline",
             {
               "opacity-50 pointer-events-none select-none":
                 !isOpen && cart?.shippingMethods?.length === 0, 
@@ -83,7 +93,7 @@ const Shipping: React.FC<ShippingProps> = ({
         >
           Delivery
           {!isOpen && (cart?.shippingMethods?.length ?? 0) > 0 && ( 
-            <CircleCheck className="h-5 w-5" /> 
+            <CheckCircle className="h-5 w-5" /> 
           )}
         </h2>
         {!isOpen &&
@@ -120,7 +130,7 @@ const Shipping: React.FC<ShippingProps> = ({
                   onValueChange={handleChange}
                   className="space-y-2"
                 >
-                  {_shippingMethods?.map((option: any) => {
+                  {availableShippingMethods?.map((option) => {
                     const isDisabled = false
 
                     return (
@@ -133,7 +143,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           value={option.id}
                           id={option.id}
                           disabled={isDisabled}
-                          className="sr-only" // Hide the radio button visually but keep it accessible
+                          className="sr-only"
                         />
                         <Label 
                           htmlFor={option.id}
@@ -175,17 +185,15 @@ const Shipping: React.FC<ShippingProps> = ({
             </div>
           </div>
 
-          {/* Removed pickup options section */}
-
           <div>
             <ErrorMessage
               error={error}
               data-testid="delivery-option-error-message"
             />
             <Button
-              size="lg" // Map size
-              onClick={handleSubmit} // handleSubmit now handles API call + navigation
-              disabled={!selectedOption || isLoading} // Disable if no method or loading
+              size="lg"
+              onClick={handleSubmit}
+              disabled={!selectedOption || isLoading}
               data-testid="submit-delivery-option-button"
             >
               {isLoading && <RiLoader2Fill className="mr-2 h-4 w-4 animate-spin" />} 
@@ -196,7 +204,6 @@ const Shipping: React.FC<ShippingProps> = ({
       ) : (
         <div>
           <div className="text-xs font-normal"> 
-            {/* Updated summary section */}
             {cart && (cart?.shippingMethods?.length ?? 0) > 0 && (
               <div className="flex flex-col w-1/3">
                 <p className="text-sm font-medium text-foreground mb-1"> 

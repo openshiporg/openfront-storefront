@@ -36,7 +36,7 @@ const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
         currentInfo={`${customer.email}`}
         isSuccess={successState}
         isError={!!state.error}
-        errorMessage={state.error}
+        errorMessage={state.error || undefined}
         clearState={clearState}
         data-testid="account-email-editor"
       >

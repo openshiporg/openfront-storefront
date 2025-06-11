@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils";
 import Item from "@/features/storefront/modules/cart/components/item";
 import SkeletonLineItem from "@/features/storefront/modules/skeletons/components/skeleton-line-item";
 
-const ItemsPreviewTemplate = ({ items, region }) => {
+interface ItemsPreviewTemplateProps {
+  items?: any[];
+  region?: any;
+}
+
+const ItemsPreviewTemplate = ({ items, region }: ItemsPreviewTemplateProps) => {
   const hasOverflow = items && items.length > 4;
 
   return (
@@ -33,7 +38,7 @@ const ItemsPreviewTemplate = ({ items, region }) => {
                   );
                 })
             : Array.from(Array(5).keys()).map((i) => {
-                return <SkeletonLineItem key={i} type="preview" />;
+                return <SkeletonLineItem key={i} />;
               })}
         </TableBody>
       </Table>

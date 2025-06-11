@@ -8,7 +8,7 @@ type ProductPreviewType = {
   title?: string | null;
   thumbnail?: string | null;
 } 
-import { StoreRegion } from "@/features/storefront/types/graphql-types"
+import { StoreRegion } from "@/features/storefront/types/storefront"
 
 // Define inline types based on schema assumptions
 type CollectionInfo = {

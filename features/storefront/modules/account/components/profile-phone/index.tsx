@@ -36,7 +36,7 @@ const ProfilePhone: React.FC<MyInformationProps> = ({ customer }) => {
         currentInfo={`${customer.phone}`}
         isSuccess={successState}
         isError={!!state.error}
-        errorMessage={state.error}
+        errorMessage={state.error || undefined}
         clearState={clearState}
         data-testid="account-phone-editor"
       >

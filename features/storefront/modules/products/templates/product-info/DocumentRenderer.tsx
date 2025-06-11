@@ -24,7 +24,7 @@ export const defaultRenderers = {
     },
     divider: "hr",
     heading: ({ level, children, textAlign }: { level: number; children: React.ReactNode; textAlign?: string }) => {
-      let Heading = `h${level}` as keyof JSX.IntrinsicElements
+      let Heading = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 
       return <Heading style={{ textAlign: textAlign as any }} children={children} />
     },

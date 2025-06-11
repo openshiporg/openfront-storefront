@@ -8,7 +8,7 @@ import OnboardingCta from "@/features/storefront/modules/order/components/onboar
 import OrderDetails from "@/features/storefront/modules/order/components/order-details"
 import ShippingDetails from "@/features/storefront/modules/order/components/shipping-details"
 import PaymentDetails from "@/features/storefront/modules/order/components/payment-details"
-import { StoreOrder } from "@/features/storefront/types/graphql-types"
+import { StoreOrder } from "@/features/storefront/types/storefront"
 
 type OrderCompletedTemplateProps = {
   order: StoreOrder
@@ -23,7 +23,7 @@ export default async function OrderCompletedTemplate({
 
   return (
     <div className="py-6 min-h-[calc(100vh-64px)]">
-      <div className="max-w-[1440px] w-full mx-auto px-6 flex flex-col justify-center items-center gap-y-10 max-w-4xl h-full w-full">
+      <div className="mx-auto px-6 flex flex-col justify-center items-center gap-y-10 max-w-4xl h-full w-full">
         {isOnboarding && <OnboardingCta orderId={order.id} />}
         <div
           className="flex flex-col gap-4 max-w-4xl h-full bg-background w-full py-10"

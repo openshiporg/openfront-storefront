@@ -5,12 +5,18 @@
  * @param pricingService Pricing service to use for calculating prices.
  * @returns The list of products with prices calculated.
  */
+interface GetPricesByPriceSetIdParams {
+  products: any[];
+  currency_code: string;
+  pricingService: any;
+}
+
 export async function getPricesByPriceSetId(
   {
     products,
     currency_code,
     pricingService
-  }
+  }: GetPricesByPriceSetIdParams
 ) {
   for (const product of products) {
     for (const variant of product.variants) {

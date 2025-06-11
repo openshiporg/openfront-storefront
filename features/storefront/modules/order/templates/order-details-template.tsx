@@ -8,7 +8,7 @@ import OrderDetails from "@/features/storefront/modules/order/components/order-d
 import OrderSummary from "@/features/storefront/modules/order/components/order-summary"
 import ShippingDetails from "@/features/storefront/modules/order/components/shipping-details"
 import React from "react"
-import { StoreOrder } from "@/features/storefront/types/graphql-types"
+import { StoreOrder } from "@/features/storefront/types/storefront"
 
 type OrderDetailsTemplateProps = {
   order: StoreOrder

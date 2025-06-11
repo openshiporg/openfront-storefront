@@ -13,7 +13,7 @@ import {
 
 import LocalizedClientLink from "@/features/storefront/modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
-import type { StoreRegion } from "@/features/storefront/types/graphql-types"
+import type { StoreRegion } from "@/features/storefront/types/storefront"
 
 const SideMenuItems = {
   Home: "/",

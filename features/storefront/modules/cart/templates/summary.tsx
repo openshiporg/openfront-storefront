@@ -27,15 +27,12 @@ type CartSummary = {
   taxTotal?: number | null; // Correct field name from schema
   total?: number | null; // Correct field name from schema
   promotions?: PromotionInfo[] | null; // Correct field name and type from schema
+  discounts?: any[];
+  giftCards?: any[];
   region?: RegionInfoForSummary | null; // Correct field name from schema
   currencyCode?: string; // Correct field name from schema
   lineItems?: any[]; // Keep basic structure for now
 } | null;
-
-// Type for DiscountCode props, ensuring promotions exist
-type CartWithPromotions = NonNullable<CartSummary> & {
-  promotions: PromotionInfo[]; // Use correct type
-};
 
 type SummaryProps = {
   cart: CartSummary;
@@ -49,7 +46,7 @@ const Summary = ({ cart }: SummaryProps) => {
       {/* Replace Heading with h2 and Tailwind classes */}
       <h2 className="text-3xl leading-tight font-medium">Summary</h2>
       {/* Add null check and type assertion for DiscountCode */}
-      {cart && <DiscountCode cart={cart as CartWithPromotions} />}
+      {cart && <DiscountCode cart={cart} />}
       <Divider />
       {/* Pass cart data via 'data' prop */}
       <CartTotals data={cart} />

@@ -8,7 +8,22 @@ import {
 } from "@/components/ui/tooltip";
 import React from "react";
 
-const CartTotals = ({ data }) => {
+interface CartTotalsProps {
+  data: {
+    subtotal?: number | string | null;
+    discount?: number | string | null;
+    giftCardTotal?: number | string | null;
+    shipping?: number | string | null;
+    tax?: number | string | null;
+    total?: number | string | null;
+  } | null;
+}
+
+const CartTotals = ({ data }: CartTotalsProps) => {
+  if (!data) {
+    return null;
+  }
+
   return (
     <div>
       <div className="flex flex-col gap-y-2 text-base font-medium text-muted-foreground">

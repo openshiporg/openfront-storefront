@@ -4,6 +4,7 @@ import { openfrontClient } from "../config"
 import { cache } from "react";
 import sortProducts from "../util/sort-products";
 import { getCollectionsList } from "./collections"; // Added import
+import { ProductWhereClause } from "../../types/storefront";
 
 const emptyResponse = {
   response: { products: [], count: 0 },
@@ -27,7 +28,7 @@ export const getProductsList = cache(async function ({
   const limit = queryParams?.limit || 12;
   const offset = pageParam * limit;
 
-  const whereClause = {
+  const whereClause: ProductWhereClause = {
     productCollections: queryParams?.collectionId ? {
       some: { id: { equals: queryParams.collectionId } }
     } : undefined,
@@ -390,17 +391,19 @@ export const getHomepageProducts = cache(async function ({
     collectionHandles = collections.map((collection: any) => collection.handle); // Added any type for collection
   }
 
-  for (const handle of collectionHandles) {
-    // TODO: Implement or import getProductsByCollectionHandle
-    // Commenting out for now to fix TS error
-    // const products = await getProductsByCollectionHandle({
-    //   handle,
-    //   currencyCode,
-    //   countryCode,
-    //   limit: 3,
-    // });
-    // collectionProductsMap.set(handle, products.response.products);
-    collectionProductsMap.set(handle, []); // Placeholder
+  if (collectionHandles) {
+    for (const handle of collectionHandles) {
+      // TODO: Implement or import getProductsByCollectionHandle
+      // Commenting out for now to fix TS error
+      // const products = await getProductsByCollectionHandle({
+      //   handle,
+      //   currencyCode,
+      //   countryCode,
+      //   limit: 3,
+      // });
+      // collectionProductsMap.set(handle, products.response.products);
+      collectionProductsMap.set(handle, []); // Placeholder
+    }
   }
 
   return collectionProductsMap;

@@ -1,5 +1,5 @@
 import { getProductsList } from "@/features/storefront/lib/data/products"
-import { StoreCollection, StoreRegion } from "@/features/storefront/types/graphql-types"
+import { StoreCollection, StoreRegion } from "@/features/storefront/types/storefront"
 
 import InteractiveLink from "@/features/storefront/modules/common/components/interactive-link"
 import ProductPreview from "@/features/storefront/modules/products/components/product-preview"
@@ -15,7 +15,7 @@ export default async function ProductRail({
     response: { products },
   } = await getProductsList({
     // Access country code based on schema
-    countryCode: region.countries?.[0]?.iso_2 || "us", // Corrected property name
+    countryCode: region.countries?.[0]?.iso2 || "us", // Corrected property name
     queryParams: {
       collectionId: collection.id,
       // limit: 4 // Optional: You might want to limit the number of products shown

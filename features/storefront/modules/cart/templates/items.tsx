@@ -3,10 +3,15 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import Item from "@/features/storefront/modules/cart/components/item"
 import SkeletonLineItem from "@/features/storefront/modules/skeletons/components/skeleton-line-item"
 
+interface ItemsTemplateProps {
+  items?: any[];
+  region?: any;
+}
+
 const ItemsTemplate = ({
   items,
   region
-}) => {
+}: ItemsTemplateProps) => {
   return (
     <div>
       <div className="pb-3 flex items-center">

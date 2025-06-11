@@ -1,7 +1,10 @@
 import LocalizedClientLink from "../../../common/components/localized-client-link"
 import { DocumentRenderer } from "./DocumentRenderer"
 
-// Define inline type based on GraphQL Product schema and component usage
+type ProductDescription = {
+  document?: any;
+} | string | null;
+
 type ProductCollectionInfo = {
   handle?: string | null;
   title?: string | null;
@@ -9,16 +12,13 @@ type ProductCollectionInfo = {
 
 type ProductInfoType = {
   title?: string | null;
-  description?: {
-    document?: any; // Keep 'any' for now as DocumentRenderer structure is complex
-  } | string | null; // Allow string fallback
+  description?: ProductDescription;
   productCollections?: ProductCollectionInfo[] | null;
 };
 
 type ProductInfoProps = {
   product: ProductInfoType;
 };
-
 const renderers = {
   inline: {
     link: ({ children, href }: { children: React.ReactNode, href: string }) => {
@@ -57,7 +57,7 @@ const renderers = {
         6: "text-sm"
       }
       
-      const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
+      const HeadingTag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
       return (
         <HeadingTag
           className={`${sizes[level]} leading-tight text-foreground mb-2`}
@@ -117,16 +117,16 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           {product.title}
         </h2>
 
-        {product.description?.document ? (
-          <DocumentRenderer document={product.description.document} renderers={renderers} />
-        ) : (
+        {typeof product.description === 'string' ? (
           <p
             className="text-base text-muted-foreground whitespace-pre-line"
             data-testid="product-description"
           >
-            {product.description as string}
+            {product.description}
           </p>
-        )}
+        ) : product.description?.document ? (
+          <DocumentRenderer document={product.description.document} renderers={renderers} />
+        ) : null}
       </div>
     </div>
   )

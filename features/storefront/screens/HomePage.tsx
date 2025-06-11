@@ -4,7 +4,7 @@ import FeaturedProducts from "@/features/storefront/modules/home/components/feat
 import Hero from "@/features/storefront/modules/home/components/hero"
 import { getCollectionsListByRegion } from "@/features/storefront/lib/data/collections" // Assuming this function exists and takes regionId
 import { getRegion } from "@/features/storefront/lib/data/regions"
-import type { StoreCollection, StoreRegion } from "@/features/storefront/types/graphql-types"
+import type { StoreCollection, StoreRegion } from "@/features/storefront/types/storefront"
  
 export const metadata: Metadata = {
   title: "Openfront Next.js Starter",

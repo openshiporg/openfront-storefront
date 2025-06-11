@@ -17,10 +17,11 @@ import {
   updateCustomerAddress,
 } from "@/features/storefront/lib/data/user"
 import { cn } from "@/lib/utils"
+import { StorefrontAddress, StorefrontRegion } from "@/features/storefront/types"
 
 type EditAddressProps = {
-  region: any
-  address: any
+  region: StorefrontRegion
+  address: StorefrontAddress
   isActive?: boolean
 }
 
@@ -210,7 +211,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
                   id="is_billing"
                   name="is_billing"
                   value="true"
-                  defaultChecked={address.isBilling}
+                  defaultChecked={!!address.isBilling}
                   data-testid="billing-checkbox"
                 />
                 <Label

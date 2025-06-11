@@ -109,7 +109,7 @@ export default function ProductActions({ product, region, disabled }: ProductAct
     if (hasOnlyOneVariant && variants?.[0]?.id) {
       return variants[0];
     }
-    let variantId;
+    let variantId: string | undefined;
     for (const key of Object.keys(variantRecord)) {
       if (isEqual(variantRecord[key], options)) {
         variantId = key;

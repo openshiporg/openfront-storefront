@@ -5,14 +5,25 @@ import { createContext } from "react"
 
 export const StripeContext = createContext(false)
 
+interface StripeWrapperProps {
+  paymentSession: {
+    data?: {
+      clientSecret?: string;
+    };
+  };
+  stripeKey: string | null | undefined;
+  stripePromise: any;
+  children: React.ReactNode;
+}
+
 const StripeWrapper = ({
   paymentSession,
   stripeKey,
   stripePromise,
   children,
-}) => {
+}: StripeWrapperProps) => {
   const options = {
-    clientSecret: paymentSession?.data?.client_secret,
+    clientSecret: paymentSession?.data?.clientSecret,
   }
 
   if (!stripeKey) {

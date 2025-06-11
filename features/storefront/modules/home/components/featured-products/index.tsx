@@ -1,4 +1,4 @@
-import { StoreCollection, StoreRegion } from "@/features/storefront/types/graphql-types"
+import { StoreCollection, StoreRegion } from "@/features/storefront/types/storefront"
 import ProductRail from "@/features/storefront/modules/home/components/featured-products/product-rail"
 
 export default async function FeaturedProducts({

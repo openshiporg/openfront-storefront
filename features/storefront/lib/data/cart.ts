@@ -7,6 +7,7 @@ import { openfrontClient } from "../config";
 import { getAuthHeaders, getCartId, setCartId, removeCartId } from "./cookies";
 import { redirect } from "next/navigation";
 import { getUser } from "./user";
+import { Address } from "../../types/storefront";
 
 const CART_QUERY = gql`
   query GetCart($cartId: ID!) {
@@ -911,7 +912,23 @@ export async function setAddresses(currentState: any, formData: FormData) { // A
     }
   } else {
     // Either no address was selected or fields were modified - create new address
-    const shippingAddress = {
+    const shippingAddress: {
+      firstName: FormDataEntryValue | null;
+      lastName: FormDataEntryValue | null;
+      address1: FormDataEntryValue | null;
+      address2: string;
+      company: FormDataEntryValue | null;
+      postalCode: FormDataEntryValue | null;
+      city: FormDataEntryValue | null;
+      province: FormDataEntryValue | null;
+      phone: FormDataEntryValue | null;
+      country: {
+        connect: {
+          iso2: FormDataEntryValue | null;
+        };
+      };
+      user?: any;
+    } = {
       firstName: formData.get("shippingAddress.firstName"),
       lastName: formData.get("shippingAddress.lastName"),
       address1: formData.get("shippingAddress.address1"),
@@ -923,9 +940,9 @@ export async function setAddresses(currentState: any, formData: FormData) { // A
       phone: formData.get("shippingAddress.phone"),
       country: {
         connect: {
-          iso2: formData.get("shippingAddress.countryCode")
-        }
-      }
+          iso2: formData.get("shippingAddress.countryCode"),
+        },
+      },
     };
 
     // If user is authenticated, create address with user connection
@@ -993,10 +1010,10 @@ export async function setAddresses(currentState: any, formData: FormData) { // A
           phone: formData.get("billingAddress.phone"),
           country: {
             connect: {
-              iso2: formData.get("billingAddress.countryCode")
-            }
-          }
-        };
+              iso2: formData.get("billingAddress.countryCode"),
+            },
+          },
+        } as unknown as Address;
 
         // Add user connection to billing address
         if (user) {
@@ -1145,7 +1162,7 @@ export async function placeOrder() {
       const secretKeyParam = completeActiveCart.secretKey ?
         `?secretKey=${completeActiveCart.secretKey}` : '';
 
-      // redirect(`/${countryCode}/order/confirmed/${completeActiveCart.id}${secretKeyParam}`);
+      redirect(`/${countryCode}/order/confirmed/${completeActiveCart.id}${secretKeyParam}`);
     }
 
     return completeActiveCart;
