@@ -119,7 +119,9 @@ export default async function Footer() {
         <div className="flex w-full mb-16 justify-between text-muted-foreground">
           {/* Replace Text with p */}
           <p className="text-[0.8125rem] leading-5 font-normal">
-            © {new Date().getFullYear()} {storeName}. All rights reserved.
+            <span suppressHydrationWarning>
+              © {new Date().getFullYear()} {storeName}. All rights reserved.
+            </span>
           </p>
           <OpenfrontCTA />
         </div>

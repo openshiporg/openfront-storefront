@@ -80,11 +80,6 @@ const CartDropdown = ({
   const pathname = usePathname()
 
   useEffect(() => {
-    console.log({ totalItems, pathname });
-    console.log(itemRef.current);
-    console.log(cartState?.lineItems?.reduce((acc: number, item: CartItem) => {
-      return acc + item.quantity
-    }, 0));
     if (itemRef.current !== totalItems && !(pathname ?? "").includes("/cart")) {
       timedOpen()
     }
