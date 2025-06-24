@@ -25,6 +25,7 @@ async function getRegionMap(request: NextRequest) {
       const { regions } = await openfrontClient.request(
         `query {
           regions {
+            code
             countries {
               id
               iso2
@@ -38,7 +39,10 @@ async function getRegionMap(request: NextRequest) {
 
       regionMapCache.regionMap.clear();
       if (regions?.length) {
-        regions.forEach((region: { countries: any[] }) => {
+        regions.forEach((region: { code: string; countries: any[] }) => {
+          // Map region code to region (for recognition)
+          regionMapCache.regionMap.set(region.code.toLowerCase(), region);
+          // Also map each country ISO2 code to the same region
           region.countries.forEach((country: { iso2: string }) => {
             regionMapCache.regionMap.set(country.iso2.toLowerCase(), region);
           });
@@ -66,12 +70,12 @@ async function getCountryCode(request: NextRequest, regionMap: Map<string, any>)
     const vercelCountryCode = request.headers
       .get("x-vercel-ip-country")
       ?.toLowerCase();
-    const urlCountryCode = request.nextUrl.pathname
+    const urlCode = request.nextUrl.pathname
       .split("/")[1]
       ?.toLowerCase();
 
-    if (urlCountryCode && regionMap.has(urlCountryCode)) {
-      countryCode = urlCountryCode;
+    if (urlCode && regionMap.has(urlCode)) {
+      countryCode = urlCode;
     } else if (vercelCountryCode && regionMap.has(vercelCountryCode)) {
       countryCode = vercelCountryCode;
     } else if (regionMap.has(DEFAULT_REGION)) {
