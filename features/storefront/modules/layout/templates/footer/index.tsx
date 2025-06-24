@@ -4,10 +4,13 @@ import { getCollectionsList } from "@/features/storefront/lib/data/collections"
 import LocalizedClientLink from "@/features/storefront/modules/common/components/localized-client-link"
 import OpenfrontCTA from "@/features/storefront/modules/layout/components/openfront-cta"
 import Logo from "@/features/storefront/modules/layout/components/logo"
+import { getStore } from "@/features/storefront/lib/data/store"
 
 export default async function Footer() {
   const { collections } = await getCollectionsList(0, 6)
   const { productCategories } = await getCategoriesList(0, 6)
+  const store = await getStore()
+  const storeName = store?.name || "Openfront Store"
 
   return (
     <footer className="border-t border-border w-full">
@@ -116,7 +119,7 @@ export default async function Footer() {
         <div className="flex w-full mb-16 justify-between text-muted-foreground">
           {/* Replace Text with p */}
           <p className="text-[0.8125rem] leading-5 font-normal">
-            © {new Date().getFullYear()} Openfront. All rights reserved.
+            © {new Date().getFullYear()} {storeName}. All rights reserved.
           </p>
           <OpenfrontCTA />
         </div>

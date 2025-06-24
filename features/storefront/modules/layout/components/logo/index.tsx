@@ -1,6 +1,8 @@
 import { cn } from '@/lib/utils';
 import { Tektur } from 'next/font/google';
 import LocalizedClientLink from '@/features/storefront/modules/common/components/localized-client-link';
+import { getStore } from '@/features/storefront/lib/data/store';
+import { formatStoreName } from '@/features/storefront/lib/utils/store';
 
 const tektur = Tektur({
   subsets: ['latin'],
@@ -8,7 +10,10 @@ const tektur = Tektur({
   adjustFontFallback: false,
 });
 
-export default function Logo() {
+export default async function Logo() {
+  const store = await getStore();
+  const storeName = store?.name || 'Openfront Store';
+  const { first, second } = formatStoreName(storeName);
   return (
     <LocalizedClientLink
       href="/"
@@ -51,9 +56,13 @@ export default function Logo() {
         </defs>
       </svg>
       <h1 className="flex items-center tracking-wide text-lg">
-        <span className="font-medium">impossible</span>
-        <span className="mx-1.5 text-base text-muted-foreground">x</span>
-        <span className="font-light">tees</span>
+        <span className="font-medium">{first.toLowerCase()}</span>
+        {second && (
+          <>
+            <span className="mx-1.5 text-base text-muted-foreground">x</span>
+            <span className="font-light">{second.toLowerCase()}</span>
+          </>
+        )}
       </h1>
     </LocalizedClientLink>
   );
