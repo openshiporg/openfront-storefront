@@ -40,7 +40,7 @@ async function getRegionMap(request: NextRequest) {
       regionMapCache.regionMap.clear();
       if (regions?.length) {
         regions.forEach((region: { code: string; countries: any[] }) => {
-          // Map region code to region (for recognition)
+          // Map region code to region
           regionMapCache.regionMap.set(region.code.toLowerCase(), region);
           // Also map each country ISO2 code to the same region
           region.countries.forEach((country: { iso2: string }) => {
