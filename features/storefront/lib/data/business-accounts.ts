@@ -38,6 +38,12 @@ const CUSTOMER_ORDERS_QUERY = gql`
   }
 `;
 
+const CUSTOMER_PAID_INVOICES_QUERY = gql`
+  query GetCustomerPaidInvoices($limit: Int, $offset: Int) {
+    getCustomerPaidInvoices(limit: $limit, offset: $offset)
+  }
+`;
+
 const CREATE_BUSINESS_ACCOUNT_REQUEST_MUTATION = gql`
   mutation CreateBusinessAccountRequest(
     $customerId: ID!
@@ -79,7 +85,6 @@ export const getCustomerBusinessAccount = cache(async function (customerId: stri
     );
     return getCustomerAccounts?.[0] || null;
   } catch (error) {
-    console.error('Error fetching customer business account:', error);
     throw error;
   }
 });
@@ -95,7 +100,6 @@ export const getBusinessAccountRequest = cache(async function (customerId: strin
     );
     return businessAccountRequests?.[0] || null;
   } catch (error) {
-    console.error('Error fetching business account request:', error);
     throw error;
   }
 });
@@ -111,7 +115,6 @@ export const getCustomerOrdersForAccount = cache(async function (customerId: str
     );
     return getCustomerOrders || [];
   } catch (error) {
-    console.error('Error fetching customer orders:', error);
     throw error;
   }
 });
@@ -134,7 +137,6 @@ export async function createBusinessAccountRequest(formData: {
     );
     return createBusinessAccountRequest;
   } catch (error) {
-    console.error('Error creating business account request:', error);
     throw error;
   }
 }
@@ -171,12 +173,9 @@ export async function submitBusinessAccountRequest(prevState: any, formData: For
 }
 
 export async function updateWebhookUrl(prevState: any, formData: FormData) {
-  console.log('SERVER ACTION updateWebhookUrl called!');
   try {
     const headers = await getAuthHeaders();
     const webhookUrl = formData.get('webhookUrl') as string;
-    
-    console.log('Updating webhook URL:', { webhookUrl: webhookUrl.trim(), headers });
     
     const result = await openfrontClient.request(
       gql`
@@ -193,8 +192,6 @@ export async function updateWebhookUrl(prevState: any, formData: FormData) {
       headers
     );
     
-    console.log('GraphQL result:', result);
-    
     if (!result || !result.updateActiveUser) {
       throw new Error('No response from updateActiveUser mutation');
     }
@@ -204,7 +201,6 @@ export async function updateWebhookUrl(prevState: any, formData: FormData) {
       message: 'Webhook URL updated successfully'
     };
   } catch (error: any) {
-    console.error('Error updating webhook URL:', error);
     return {
       success: false,
       error: error.message || 'Failed to update webhook URL'
@@ -241,3 +237,18 @@ export async function regenerateCustomerToken(prevState: any, formData: FormData
     };
   }
 }
+
+export const getCustomerPaidInvoices = cache(async function (limit: number = 10, offset: number = 0) {
+  const headers = await getAuthHeaders();
+  
+  try {
+    const { getCustomerPaidInvoices } = await openfrontClient.request(
+      CUSTOMER_PAID_INVOICES_QUERY,
+      { limit, offset },
+      headers
+    );
+    return getCustomerPaidInvoices || [];
+  } catch (error) {
+    throw error;
+  }
+});
