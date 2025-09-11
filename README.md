@@ -31,4 +31,4 @@ Deploy your own instance with one click:
 
 ## Documentation
 
-For more information about Openfront, visit the main [Openfront repository](https://github.com/openship/openfront).
+For more information about Openfront, visit the main [Openfront repository](https://github.com/openshiporg/openfront).
