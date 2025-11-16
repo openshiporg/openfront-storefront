@@ -9,6 +9,8 @@ interface Store {
   defaultCurrencyCode: string;
   homepageTitle?: string;
   homepageDescription?: string;
+  logoIcon?: string;
+  logoColor?: string;
   metadata?: any;
 }
 
@@ -24,6 +26,8 @@ export async function getStore(): Promise<Store | null> {
         defaultCurrencyCode
         homepageTitle
         homepageDescription
+        logoIcon
+        logoColor
         metadata
       }
     }
@@ -31,15 +35,14 @@ export async function getStore(): Promise<Store | null> {
 
   try {
     const response = await openfrontClient.request(query);
-    
+
     if (response.stores && response.stores.length > 0) {
       return response.stores[0];
     }
-    
+
     return null;
   } catch (error) {
     console.error('Error fetching store:', error);
     return null;
   }
 }
-

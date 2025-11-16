@@ -1,10 +1,10 @@
-import { retrieveOrder } from "@/features/storefront/lib/data/orders" 
-import OrderCompletedTemplate from "@/features/storefront/modules/order/templates/order-completed-template" 
+import { retrieveOrder } from "@/features/storefront/lib/data/orders"
+import OrderCompletedTemplate from "@/features/storefront/modules/order/templates/order-completed-template"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import type { StoreOrder } from "@/features/storefront/types/storefront"
 import SkeletonOrderConfirmed from "@/features/storefront/modules/skeletons/templates/skeleton-order-confirmed"
- 
+
 // Add searchParams to Props
 type Props = {
   params: Promise<{ id: string }>
@@ -22,7 +22,7 @@ export async function OrderConfirmedPage({ params: paramsPromise, searchParams: 
   const searchParams = await searchParamsPromise
 
   // Extract secretKey (assuming it's passed as 'key')
-  const secretKey = typeof searchParams?.key === 'string' ? searchParams.key : null
+  const secretKey = typeof searchParams?.secretKey === 'string' ? searchParams.secretKey : null
 
   // Call retrieveOrder with id and secretKey
   const order: StoreOrder | null = await retrieveOrder(params.id, secretKey).catch(() => null)

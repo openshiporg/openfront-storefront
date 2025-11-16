@@ -86,13 +86,21 @@ const CartDropdown = ({
   }, [totalItems, pathname])
 
   return (
-    <div className="h-full z-50" onMouseEnter={openAndCancel} onMouseLeave={close}>
+    // TODO: Remove suppressHydrationWarning when React 19.2.0 useId bug is fixed upstream
+    // Known issue: https://github.com/radix-ui/primitives/issues/3700
+    // Radix UI generates different IDs on server vs client in React 19.2.0 (Next.js 16+)
+    <div className="h-full z-50" suppressHydrationWarning>
       <Popover open={cartDropdownOpen} onOpenChange={setCartDropdownOpen}>
-        <div className="relative h-full">
+        <div className="relative h-full" onMouseEnter={openAndCancel} onMouseLeave={close}>
           <PopoverTrigger asChild>
-            <button className="h-full px-3">
-              <LocalizedClientLink className="hover:text-foreground" href="/cart">
-                {`Cart (${totalItems})`}
+            <button className="h-full" suppressHydrationWarning>
+              <LocalizedClientLink className="flex items-center hover:text-foreground" href="/cart">
+                {`Cart`}
+                {totalItems > 0 && (
+                  <span className="ml-2 inline-flex items-center justify-center rounded-full bg-muted text-foreground/60 border text-[.5rem] font-bold h-4 w-4">
+                    {totalItems}
+                  </span>
+                )}
               </LocalizedClientLink>
             </button>
           </PopoverTrigger>
@@ -100,6 +108,8 @@ const CartDropdown = ({
             className="hidden sm:block absolute top-[calc(100%+1px)] right-0 bg-background border-x border-b w-[420px] text-foreground p-0"
             sideOffset={4}
             align="end"
+            onMouseEnter={openAndCancel}
+            onMouseLeave={close}
           >
             {/* <div className="p-4 flex items-center justify-center border-b">
               <h3 className="text-lg font-medium">Cart</h3>
@@ -119,7 +129,7 @@ const CartDropdown = ({
                         <div className="flex flex-col">
                           <div className="flex flex-col flex-1">
                             <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
+                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4">
                                 <h3 className="text-sm overflow-hidden text-ellipsis">
                                   <LocalizedClientLink href={`/products/${item.productVariant.product.handle}`}>
                                     {item.title}

@@ -31,7 +31,7 @@ export async function CheckoutPage() {
   const customer = await getUser();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-[1fr_416px] max-w-[1440px] w-full mx-auto px-6 gap-x-40 py-12">
+    <div className="grid grid-cols-1 sm:grid-cols-[1fr_416px] max-w-[1440px] w-full mx-auto px-6 gap-y-8 sm:gap-x-12 xl:gap-x-40 py-12">
       <Wrapper cart={cart}>
         <CheckoutForm cart={cart} customer={customer} />
       </Wrapper>
@@ -51,18 +51,18 @@ export function CheckoutLayout({
         <nav className="flex h-full items-center max-w-[1440px] w-full mx-auto px-6 justify-between">
           <LocalizedClientLink
             href="/cart"
-            className="text-xs font-semibold text-foreground flex items-center gap-x-2 uppercase flex-1 basis-0"
+            className="text-muted-foreground hover:text-foreground text-xs font-semibold flex items-center gap-x-2 uppercase flex-1 basis-0 min-w-0"
             data-testid="back-to-cart-link"
           >
-            <ChevronDown className="rotate-90" size={16} />
-            <span className="mt-px hidden sm:block text-xs font-medium leading-5 text-muted-foreground hover:text-foreground ">
+            <ChevronDown className="rotate-90 shrink-0" size={16} />
+            <span className="mt-px hidden lg:block text-xs font-medium leading-5 truncate">
               Back to shopping cart
             </span>
-            <span className="mt-px block sm:hidden text-xs font-medium leading-5 text-muted-foreground hover:text-foreground">
+            <span className="mt-px hidden sm:block lg:hidden text-xs font-medium leading-5 truncate">
               Back
             </span>
           </LocalizedClientLink>
-          <div className="scale-75">
+          <div>
             <Logo />
           </div>
           <div className="flex-1 basis-0" />
